@@ -245,7 +245,6 @@ class AuthSha256
       $signHeaders[$key] = $value;
     }
     // 通过
-    $signHeaders = $this->getSignHeaders($signHeaderKeys);
     $signHeaderKeysStr = implode(';', array_keys($signHeaders));
     // 获取签名头
     $canonicalHeaders = Sign::getCanonicalHeaders($signHeaders);
