@@ -259,12 +259,12 @@ class AuthSha256
     return array(
       'requestId.server'=>$this->requestId,
       'accessKeyId.server'=>$this->accessKeyId,
+      'accessKey.server'=>$this->accessKey,
       'deviceCard.server'=>$this->deviceCard,
       'signingKey.server'=>$signingKey,
       'signHeaderKeysStr.server'=>$signHeaderKeysStr,
       'canonicalRequest.server'=>$canonicalRequest,
-      'authSign.server'=>$authSign,
-      'accessKey.server'=>$this->accessKey,
+      'authSign'=>$authSign,
       'authString'=>$authString
     );
   }
