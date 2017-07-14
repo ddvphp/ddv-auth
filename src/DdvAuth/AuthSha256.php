@@ -1,6 +1,7 @@
 <?php
 namespace DdvPhp\DdvAuth;
 use \DdvPhp\DdvUrl;
+use \DdvPhp\DdvException\Error as ErrorException;
 
 /**
  * Class Cors
@@ -235,6 +236,20 @@ class AuthSha256
   public function getAuthString(){
     $authObj = $this->getAuthArray();
     return $authObj['authString'];
+  }
+  public function checkSignTime(){
+    //签名时间
+    $signTime = empty($this->signTimeString) ? 0 : strtotime(strtoupper($this->signTimeString));
+    //过期
+    $expiredTimeOffset = empty($this->expiredTimeOffset) ? 0 : intval($this->expiredTimeOffset);
+    //签名过期
+    if (time()>($signTime + $expiredTimeOffset)) {
+      //抛出过期
+      throw new ErrorException('Request authorization expired!','AUTHORIZATION_REQUEST_EXPIRED',403);
+    }elseif (($signTime - $expiredTimeOffset) < time()) {
+      //签名期限还没有到
+      throw new ErrorException('Request authorization has not yet entered into force!','AUTHORIZATION_REQUEST_NOT_ENABLE',403);
+    }
   }
   public function getAuthArray(){
     // 获取auth
