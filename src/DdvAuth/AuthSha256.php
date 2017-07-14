@@ -257,15 +257,15 @@ class AuthSha256
     $authString .= "/{$signHeaderKeysStr}/{$authSign}";
 
     return array(
-      'requestId'=>$requestId,
-      'accessKeyId'=>$accessKeyId,
-      'deviceCard'=>$deviceCard,
+      'requestId.server'=>$this->requestId,
+      'accessKeyId.server'=>$this->accessKeyId,
+      'deviceCard.server'=>$this->deviceCard,
       'signingKey.server'=>$signingKey,
       'signHeaderKeysStr.server'=>$signHeaderKeysStr,
       'canonicalRequest.server'=>$canonicalRequest,
       'authSign.server'=>$authSign,
-      'authString'=>$authString,
-      'accessKey.server'=>$this->accessKey
+      'accessKey.server'=>$this->accessKey,
+      'authString'=>$authString
     );
   }
 }
