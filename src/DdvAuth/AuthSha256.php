@@ -195,7 +195,7 @@ class AuthSha256
   public function setSignTimeString($signTimeString){
     if (is_numeric($signTimeString)) {
       $signTimeString = gmdate('Y-m-d\TH:i:s\Z', $signTimeString);
-    }else if(class_exists('DateTime') && class_exists('DateTimeZone') && $timestamp instanceof \DateTime){
+    }else if(class_exists('DateTime') && class_exists('DateTimeZone') && $signTimeString instanceof \DateTime){
       $signTimeString->setTimezone(new \DateTimeZone('UTC'));
       $signTimeString = $signTimeString->format('Y-m-d\TH:i:s\Z');
     }
