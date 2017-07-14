@@ -162,6 +162,15 @@ class AuthSha256
     return $this;
   }
   /**
+   * 授权key
+   * @param string $accessKey [授权key]
+   * @return AuthSha256 $this [请求对象]
+   */
+  public function setAccessKey($accessKey){
+    $this->accessKey = $accessKey;
+    return $this;
+  }
+  /**
    * 设置请求id
    * @param string $requestId [请求id]
    * @return AuthSha256 $this [请求对象]
