@@ -224,10 +224,10 @@ class AuthSha256
     return $authString;
   }
   public function getAuthString(){
-    $authObj = $this->getAuthObj();
+    $authObj = $this->getAuthArray();
     return $authObj['authString'];
   }
-  public function getAuthObj(){
+  public function getAuthArray(){
     // 获取auth
     $authString = $this->getAuthStringPrefix();
     // 生成临时key
