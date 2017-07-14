@@ -200,13 +200,13 @@ class AuthSha256
   }
   public function getSigningKey($authString = null){
     if (empty($authString)) {
-      $authString = $this->getAuthString();
+      $authString = $this->getAuthStringPrefix();
     }
     //生成加密key
     $signingKey = hash_hmac('sha256', $authString, $this->accessKey);
     return $signingKey;
   }
-  public function getAuthString(){
+  public function getAuthStringPrefix(){
     // 授权字符串
     $authString = $this->authVersion;
     if (!empty($this->requestId)) {
@@ -219,23 +219,50 @@ class AuthSha256
     $authString .= "/{$this->signTimeString}/{$this->expiredTimeOffset}";
     return $authString;
   }
-  public function check(){
-
+  public function getAuthString(){
+    $authObj = $this->getAuthObj();
+    return $authObj['authString'];
+  }
+  public function getAuthObj(){
+    // 获取auth
+    $authString = $this->getAuthStringPrefix();
+    // 生成临时key
+    $signingKey = $this->getSigningKey($authString);
+    // 获取path
+    $canonicalPath = DdvUrl::urlEncodeExceptSlash($this->path);
     // 重新排序编码
     $canonicalQuery = Sign::canonicalQuerySort(DdvUrl::buildQuery($this->query));
-    $signHeaders = $requestCore->request_headers;
-    $authHeadersStr = implode(';', array_keys($signHeaders));
+
+    $signHeaders = array();
+    foreach ($this->headers as $key => $value) {
+      if (in_array($key, $this->noSignHeaders)) {
+        continue;
+      }
+      $signHeaders[$key] = $value;
+    }
+    // 通过
+    $signHeaders = $this->getSignHeaders($signHeaderKeys);
+    $signHeaderKeysStr = implode(';', array_keys($signHeaders));
     // 获取签名头
     $canonicalHeaders = Sign::getCanonicalHeaders($signHeaders);
     //生成需要签名的信息体
     $canonicalRequest = "{$this->method}\n{$canonicalPath}\n{$canonicalQuery}\n{$canonicalHeaders}";
 
     //服务端模拟客户端算出的签名信息
-    $sessionSign = hash_hmac('sha256', $canonicalRequest, $signingKey);
+    $authSign = hash_hmac('sha256', $canonicalRequest, $signingKey);
     // 组成最终签名串
-    $authString .= "/{$authHeadersStr}/{$sessionSign}";
-  }
-  public function getCanonicalPath($canonicalQuery = '')
-  {
+    $authString .= "/{$signHeaderKeysStr}/{$authSign}";
+
+    return array(
+      'requestId'=>$requestId,
+      'accessKeyId'=>$accessKeyId,
+      'deviceCard'=>$deviceCard,
+      'signingKey.server'=>$signingKey,
+      'signHeaderKeysStr.server'=>$signHeaderKeysStr,
+      'canonicalRequest.server'=>$canonicalRequest,
+      'authSign.server'=>$authSign,
+      'authString'=>$authString,
+      'accessKey.server'=>$this->accessKey
+    );
   }
 }
