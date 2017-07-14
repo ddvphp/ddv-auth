@@ -57,7 +57,7 @@ class Sign
     $signHeaderKeysNew = array();
     //遍历授权头的key
     foreach ($signHeaderKeys as $key => $authHeader) {
-      //去空格，转小写
+      //去空格
       $signHeaderKeysNew[]=trim($authHeader);
     }
     //把处理后的头的key覆盖原来的变量，释放内存
