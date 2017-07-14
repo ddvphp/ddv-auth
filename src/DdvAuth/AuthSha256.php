@@ -252,9 +252,9 @@ class AuthSha256
     $canonicalRequest = "{$this->method}\n{$canonicalPath}\n{$canonicalQuery}\n{$canonicalHeaders}";
 
     //服务端模拟客户端算出的签名信息
-    $authSign = hash_hmac('sha256', $canonicalRequest, $signingKey);
+    $sign = hash_hmac('sha256', $canonicalRequest, $signingKey);
     // 组成最终签名串
-    $authString .= "/{$signHeaderKeysStr}/{$authSign}";
+    $authString .= "/{$signHeaderKeysStr}/{$sign}";
 
     return array(
       'requestId.server'=>$this->requestId,
@@ -264,7 +264,7 @@ class AuthSha256
       'signingKey.server'=>$signingKey,
       'signHeaderKeysStr.server'=>$signHeaderKeysStr,
       'canonicalRequest.server'=>$canonicalRequest,
-      'authSign'=>$authSign,
+      'sign'=>$sign,
       'authString'=>$authString
     );
   }
