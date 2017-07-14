@@ -246,7 +246,7 @@ class AuthSha256
     if (time()>($signTime + $expiredTimeOffset)) {
       //抛出过期
       throw new ErrorException('Request authorization expired!','AUTHORIZATION_REQUEST_EXPIRED',403);
-    }elseif (($signTime - $expiredTimeOffset) < time()) {
+    }elseif (($signTime - $expiredTimeOffset) > time()) {
       //签名期限还没有到
       throw new ErrorException('Request authorization has not yet entered into force!','AUTHORIZATION_REQUEST_NOT_ENABLE',403);
     }
