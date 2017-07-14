@@ -152,6 +152,7 @@ class AuthSha256
   }
   public function setAuthVersion($authVersion){
     $this->authVersion = $authVersion;
+    return $this;
   }
   /**
    * 授权id
@@ -250,6 +251,7 @@ class AuthSha256
       //签名期限还没有到
       throw new ErrorException('Request authorization has not yet entered into force!','AUTHORIZATION_REQUEST_NOT_ENABLE',403);
     }
+    return $this;
   }
   public function getAuthArray(){
     // 获取auth
