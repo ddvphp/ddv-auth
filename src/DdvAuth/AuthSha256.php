@@ -55,10 +55,10 @@ class AuthSha256
    * @param string $uri [访问资源地址]
    * @return AuthSha256 $this [请求对象]
    */
-  public function setUri($uri){
+  public function setUri($uri=''){
     $this->uri = $uri;
     // 解析uri
-    $uriObj = DdvUrl::parse($canonicalUri);
+    $uriObj = DdvUrl::parse($uri);
     empty($uriObj['host']) || $this->setHost($uriObj['host']);
     empty($uriObj['path']) || $this->setPath($uriObj['path']);
     empty($uriObj['query']) || $this->setQuery($uriObj['query']);
@@ -81,6 +81,10 @@ class AuthSha256
    */
   public function setPath($path){
     $this->path = empty($path) ? '' : $path ;
+    return $this;
+  }
+  public function setHost($host){
+    $this->host = empty($host) ? '' : $host ;
     return $this;
   }
   /**
