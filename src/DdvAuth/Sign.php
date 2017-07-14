@@ -11,18 +11,6 @@ use \DdvPhp\DdvUrl;
  */
 class Sign
 {
-  public static function getCanonicalHeaders($signHeaders = array())
-  {
-    //重新编码
-    $canonicalHeader = array();
-    foreach ($signHeaders as $key => $value) {
-      $canonicalHeader[] = strtolower(DdvUrl::urlEncode(trim($key))).':'.DdvUrl::urlEncode(trim(is_array($value) ? implode('; ', $value) : $value));
-    }
-    sort($canonicalHeader);
-    //服务器模拟客户端生成的头
-    $canonicalHeader = implode("\n", $canonicalHeader) ;
-    return $canonicalHeader;
-  }
   public static function canonicalQuerySort($canonicalQuery = '')
   {
     //拆分get请求的参数
@@ -47,8 +35,19 @@ class Sign
     unset($temp,$tempI,$tempKey,$tempValue,$tempNew);
     return $canonicalQuery;
   }
-
-  public static function getSignHeaderKeysByStr($signHeaderKeysStr = '')
+  public static function getCanonicalHeaders($signHeaders = array())
+  {
+    //重新编码
+    $canonicalHeader = array();
+    foreach ($signHeaders as $key => $value) {
+      $canonicalHeader[] = strtolower(DdvUrl::urlEncode(trim($key))).':'.DdvUrl::urlEncode(trim(is_array($value) ? implode('; ', $value) : $value));
+    }
+    sort($canonicalHeader);
+    //服务器模拟客户端生成的头
+    $canonicalHeader = implode("\n", $canonicalHeader) ;
+    return $canonicalHeader;
+  }
+  public static function getHeaderKeysByStr($signHeaderKeysStr = '')
   {
     //被签名的头的key，包括自定义和系统
     $signHeaderKeysStr = (is_string($signHeaderKeysStr)||is_numeric($signHeaderKeysStr)) ? (string)$signHeaderKeysStr : '';
