@@ -151,10 +151,10 @@ class AuthSha256
       $this->noSignHeadersKeys = array();
     }
     if (is_string($noSignHeadersKeys)) {
-      $this->noSignHeadersKeys[] = $noSignHeadersKeys;
+      $this->noSignHeadersKeys[] = strtolower($noSignHeadersKeys);
     }elseif(is_array($noSignHeadersKeys)){
       foreach ($noSignHeadersKeys as $noSignHeadersKey) {
-        $this->noSignHeadersKeys[] = $noSignHeadersKey;
+        $this->noSignHeadersKeys[] = strtolower($noSignHeadersKey);
       }
     }
     return $this;
@@ -269,12 +269,21 @@ class AuthSha256
     $signingKey = $this->getSigningKey($authString);
     // 获取path
     $canonicalPath = DdvUrl::urlEncodeExceptSlash($this->path);
+
+    $signQuery = array();
+    foreach ($this->query as $key => $value) {
+      if (in_array($key, $this->noSignQueryKeys)) {
+        continue;
+      }
+      $signQuery[$key] = $value;
+    }
+
     // 重新排序编码
-    $canonicalQuery = Sign::canonicalQuerySort(DdvUrl::buildQuery($this->query));
+    $canonicalQuery = Sign::canonicalQuerySort(DdvUrl::buildQuery($signQuery));
 
     $signHeaders = array();
     foreach ($this->headers as $key => $value) {
-      if (in_array($key, $this->noSignHeadersKeys)) {
+      if (in_array(strtolower($key), $this->noSignHeadersKeys)) {
         continue;
       }
       $signHeaders[$key] = $value;
