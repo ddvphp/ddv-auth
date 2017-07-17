@@ -25,9 +25,9 @@ class AuthSha256
   public $host = '';
   public $fragment = '';
   public $query = array();
-  public $noSignQuery = array();
+  public $noSignQueryKeys = array();
   public $headers = array();
-  public $noSignHeaders = array();
+  public $noSignHeadersKeys = array();
   public function __destruct()
   {
     $this->method = 'GET';
@@ -36,19 +36,19 @@ class AuthSha256
     $this->host = '';
     $this->fragment = '';
     $this->query = array();
-    $this->noSignQuery = array();
+    $this->noSignQueryKeys = array();
     $this->headers = array();
-    $this->noSignHeaders = array();
+    $this->noSignHeadersKeys = array();
   }
-  public function __construct($uri = null, $method = 'GET', $authVersion = 'ddv-auth-v1', $path = null, $query = array(), $noSignQuery = array(), $headers = array(), $noSignHeaders = array())
+  public function __construct($uri = null, $method = 'GET', $authVersion = 'ddv-auth-v1', $path = null, $query = array(), $noSignQueryKeys = array(), $headers = array(), $noSignHeadersKeys = array())
   {
     $this->setMethod($method);
     $this->setUri($uri);
     $this->setPath($path);
     $this->setQuery($query);
-    $this->setNoSignQuery($noSignQuery);
+    $this->setNoSignQueryKeys($noSignQueryKeys);
     $this->setHeaders($headers);
-    $this->setNoSignHeaders($noSignHeaders);
+    $this->setNoSignHeadersKeys($noSignHeadersKeys);
     $this->setAuthVersion($authVersion);
   }
   /**
@@ -110,14 +110,17 @@ class AuthSha256
    * @param boolean $isClean [是否清除原有的]
    * @return AuthSha256 $this [请求对象]
    */
-  public function setNoSignQuery($noSignQuery, $isClean = false){
-    if((!empty($noSignQuery))&&is_string($noSignQuery)){
-      $noSignQuery = DdvUrl::parseQuery($noSignQuery);
-    }
+  public function setNoSignQueryKeys($noSignQueryKeys, $isClean = false){
     if ($isClean !==false) {
-      $this->noSignQuery = array();
+      $this->noSignQueryKeys = array();
     }
-    $this->noSignQuery = array_merge($this->noSignQuery, $noSignQuery);
+    if (is_string($noSignQueryKeys)) {
+      $this->noSignQueryKeys[] = $noSignQueryKeys;
+    }elseif(is_array($noSignQueryKeys)){
+      foreach ($noSignQueryKeys as $noSignQueryKey) {
+        $this->noSignQueryKeys[] = $noSignQueryKey;
+      }
+    }
     return $this;
   }
   /**
@@ -143,11 +146,17 @@ class AuthSha256
    * @param boolean $isClean [是否清除原有的]
    * @return AuthSha256 $this [请求对象]
    */
-  public function setNoSignHeaders($noSignHeaders, $isClean = false){
+  public function setNoSignHeadersKeys($noSignHeadersKeys, $isClean = false){
     if ($isClean !==false) {
-      $this->noSignHeaders = array();
+      $this->noSignHeadersKeys = array();
     }
-    $this->noSignHeaders = array_merge($this->noSignHeaders, $noSignHeaders);
+    if (is_string($noSignHeadersKeys)) {
+      $this->noSignHeadersKeys[] = $noSignHeadersKeys;
+    }elseif(is_array($noSignHeadersKeys)){
+      foreach ($noSignHeadersKeys as $noSignHeadersKey) {
+        $this->noSignHeadersKeys[] = $noSignHeadersKey;
+      }
+    }
     return $this;
   }
   public function setAuthVersion($authVersion){
@@ -265,7 +274,7 @@ class AuthSha256
 
     $signHeaders = array();
     foreach ($this->headers as $key => $value) {
-      if (in_array($key, $this->noSignHeaders)) {
+      if (in_array($key, $this->noSignHeadersKeys)) {
         continue;
       }
       $signHeaders[$key] = $value;

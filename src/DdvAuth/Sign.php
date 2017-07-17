@@ -27,7 +27,7 @@ class Sign
       }
       $tempKey = substr($temp, 0,$tempI);
       $tempValue = substr($temp, $tempI+1);
-      
+
       $tempNew[] = DdvUrl::urlEncode(DdvUrl::urlDecode($tempKey)).'='.DdvUrl::urlEncode(DdvUrl::urlDecode($tempValue));
     }
     sort($tempNew);
