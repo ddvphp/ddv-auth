@@ -23,6 +23,7 @@ class AuthSha256
   public $scheme = 'http';
   public $uri = '';
   public $host = '';
+  public $port = '';
   public $fragment = '';
   public $query = array();
   public $noSignQueryKeys = array();
@@ -34,6 +35,7 @@ class AuthSha256
     $this->scheme = 'http';
     $this->uri = '';
     $this->host = '';
+    $this->port = '';
     $this->fragment = '';
     $this->query = array();
     $this->noSignQueryKeys = array();
@@ -63,6 +65,7 @@ class AuthSha256
     empty($uriObj['host']) || $this->setHost($uriObj['host']);
     empty($uriObj['path']) || $this->setPath($uriObj['path']);
     empty($uriObj['query']) || $this->setQuery($uriObj['query']);
+    empty($uriObj['port']) || $this->setPort($uriObj['port']);
     empty($uriObj['fragment']) || $this->setFragment($uriObj['fragment']);
     return $this;
   }
@@ -86,6 +89,10 @@ class AuthSha256
   }
   public function setHost($host){
     $this->host = empty($host) ? '' : $host ;
+    return $this;
+  }
+  public function setPort($port){
+    $this->port = empty($port) ? '' : $port ;
     return $this;
   }
   /**
